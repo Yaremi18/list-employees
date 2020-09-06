@@ -6,16 +6,16 @@ export default (dataCsv) => {
         if (index === 0) return accumData
 
         const actualRow = row.split(',')
-        const rowObject = headers.reduce((accumRow, header, index) => ({
-            ...accumRow,
-            [header]: actualRow[index],
-        }), {})
+        const rowObject = headers.reduce((accumRow, header, index) => {
+            const newHeader = header.replace(/\s/g, '').toLowerCase()
+            return {
+                ...accumRow,
+                [newHeader]: actualRow[index],
+            }
+        }, {})
 
-        return [
-            ...accumData,
-            rowObject,
-        ]
+        return [...accumData, rowObject]
     }, [])
 
-    return data
+    return { headers, data }
 }
