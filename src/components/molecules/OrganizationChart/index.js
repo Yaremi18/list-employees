@@ -1,6 +1,6 @@
 import React, { useMemo, useCallback } from 'react'
 import Separator from '../../atoms/Separator'
-import { Paragraph } from '../../atoms/Text'
+import { Paragraph, Title } from '../../atoms/Text'
 import { Tree, TreeNode } from 'react-organizational-chart'
 import { Node } from './style'
 
@@ -37,7 +37,7 @@ const OrganizationChart = ({ data }) => {
 
             // Add a TreeNode wrapper
             return [...accum, (
-                <TreeNode label={
+                <TreeNode key={firstRow.id} label={
                     <Node>
                         <Paragraph>{firstRow.nombre}</Paragraph>
                         <Separator />
@@ -58,24 +58,27 @@ const OrganizationChart = ({ data }) => {
     if (!data.length) return null
 
     return (
-        <Tree
-            lineWidth={'1px'}
-            lineColor={'white'}
-            lineBorderRadius={'10px'}
-            label={
-                <Node>
-                    <Paragraph>{root.nombre}</Paragraph>
-                    <Separator />
-                    <Paragraph>{root['niveljerárquico'].toUpperCase()}</Paragraph>
-                    <Paragraph>{`${root['división']} > ${root.area} > ${root.subarea}`}</Paragraph>
-                    <br />
-                    <Paragraph>{`Fecha de ingreso: ${root.fechadeingreso}`}</Paragraph>
-                </Node>
-            }
-        >
-        {/* Add children calling calculateTree */}
-        {calculateTree([root])}
-      </Tree>
+        <>
+            <Title>Organigrama</Title>
+            <Tree
+                lineWidth={'1px'}
+                lineColor={'white'}
+                lineBorderRadius={'10px'}
+                label={
+                    <Node>
+                        <Paragraph>{root.nombre}</Paragraph>
+                        <Separator />
+                        <Paragraph>{root['niveljerárquico'].toUpperCase()}</Paragraph>
+                        <Paragraph>{`${root['división']} > ${root.area} > ${root.subarea}`}</Paragraph>
+                        <br />
+                        <Paragraph>{`Fecha de ingreso: ${root.fechadeingreso}`}</Paragraph>
+                    </Node>
+                }
+            >
+            {/* Add children calling calculateTree */}
+            {calculateTree([root])}
+        </Tree>
+      </>
     )
 }
 

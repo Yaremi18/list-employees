@@ -5,9 +5,9 @@ import Table from '../../atoms/Table'
 import Select from '../../atoms/Select'
 import {
     MainWrapper,
-    Input,
     ColumnWrapper,
     DirectionWrapper,
+    InputFile,
 } from './style'
 import Separator from '../../atoms/Separator'
 import OrganizationChart from '../OrganizationChart'
@@ -52,6 +52,20 @@ const DataPrevisualizer = () => {
         })
 
         reader.readAsText(file)
+    }, [])
+
+    const updateMyData = useCallback((rowIndex, columnId, value) => {
+        setOriginalData((prev =>
+            prev.map((row, index) => {
+              if (index === rowIndex) {
+                return {
+                  ...prev[rowIndex],
+                  [columnId]: value,
+                }
+              }
+              return row
+            })
+          ))
     }, [])
 
     const columns = useMemo(() => {
@@ -128,7 +142,7 @@ const DataPrevisualizer = () => {
         <MainWrapper>
             <Title>Empleados</Title>
             
-            <Input
+            <InputFile
                 type="file"
                 id="file-selector"
                 accept=".csv"
@@ -148,15 +162,20 @@ const DataPrevisualizer = () => {
                             }}
                         />
                     </ColumnWrapper>
-                    
                     <br />
                     <Table
                         data={filteredData}
                         columns={columns}
+                        updateMyData={updateMyData}
                     />
-                    {filteredData.length === 0 && (
+                    
+                    {!filteredData.length ? (
                         <DirectionWrapper direction="center">
                             <Paragraph>No hay datos para este mes</Paragraph>
+                        </DirectionWrapper>
+                    ) : (
+                        <DirectionWrapper direction="center">
+                            <Paragraph>**Para editar los datos haz clic sobre la celda a editar</Paragraph>
                         </DirectionWrapper>
                     )}
 
@@ -190,6 +209,7 @@ const DataPrevisualizer = () => {
                         )}
                     </ColumnWrapper>
 
+                    <br />
                     <OrganizationChart data={filteredData} />
                 </>
             )}

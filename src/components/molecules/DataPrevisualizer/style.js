@@ -7,7 +7,7 @@ export const MainWrapper = styled.div`
     width: 1000px;
 `
 
-export const Input = styled.input`
+export const InputFile = styled.input`
     ::-webkit-file-upload-button {
         border-radius: 5px;
         height: 25px;

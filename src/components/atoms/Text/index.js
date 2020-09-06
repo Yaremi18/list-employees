@@ -1,10 +1,5 @@
-import styled, { css } from 'styled-components/macro'
+import styled from 'styled-components/macro'
 import theme from '../../../providers/theme'
-
-const backgroundColor = css`
-    color: ${({ color }) => theme.colors[color || 'white']};
-    
-`
 
 export const Title = styled.span`
     font-size: 30px;
