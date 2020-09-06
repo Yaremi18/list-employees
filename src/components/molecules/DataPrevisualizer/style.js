@@ -1,10 +1,10 @@
 import styled from 'styled-components/macro'
 import theme from '../../../providers/theme'
+import device from '../../../utils/screenSizes'
 
 export const MainWrapper = styled.div`
     display: flex;
     flex-direction: column;
-    width: 1000px;
 `
 
 export const InputFile = styled.input`
@@ -22,7 +22,6 @@ export const InputFile = styled.input`
         width: 150px;
     }
     outline: none;
-    width: 400px;
     font-size: 12px;
     color: ${theme.colors.secondary};
 `
@@ -33,14 +32,24 @@ export const RowWrapper = styled.div`
 `
 
 export const ColumnWrapper = styled.div`
-    width: 50%;
     display: flex;
     flex-direction: column;
     margin-top: 10px;
+
+    media ${device.mobileS} {
+        width: 100%;
+    }
+    @media ${device.laptop} { 
+        width: 50%;
+    }
 `
 
 export const DirectionWrapper = styled.div`
     width: 100%;
     display: flex;
     justify-content: ${({ direction }) => direction};
+`
+
+export const TableWrapper = styled.div`
+    overflow: auto;
 `

@@ -12,6 +12,9 @@ export const THead = styled.thead`
         color: ${theme.colors.secondary};
         height: 35px;
         font-weight: bold;
+        > th {
+            min-width: 100px;
+        }
     }
 `
 

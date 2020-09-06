@@ -7,6 +7,7 @@ import {
     MainWrapper,
     ColumnWrapper,
     DirectionWrapper,
+    TableWrapper,
     InputFile,
 } from './style'
 import Separator from '../../atoms/Separator'
@@ -163,11 +164,13 @@ const DataPrevisualizer = () => {
                         />
                     </ColumnWrapper>
                     <br />
-                    <Table
-                        data={filteredData}
-                        columns={columns}
-                        updateMyData={updateMyData}
-                    />
+                    <TableWrapper>
+                        <Table
+                            data={filteredData}
+                            columns={columns}
+                            updateMyData={updateMyData}
+                        />
+                    </TableWrapper>
                     
                     {!filteredData.length ? (
                         <DirectionWrapper direction="center">
