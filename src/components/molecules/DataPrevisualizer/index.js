@@ -12,6 +12,7 @@ import {
 } from './style'
 import Separator from '../../atoms/Separator'
 import OrganizationChart from '../OrganizationChart'
+import convertExcelToObject from '../../../utils/convertExcelToObject'
 
 const months = [
   { id: 1, name: 'Enero' },
@@ -43,16 +44,28 @@ const DataPrevisualizer = () => {
         if (!file) return
 
         const reader = new FileReader()
-
         reader.addEventListener('load', (event) => {
+            
             setFileLoaded(true)
             const _result = event.target.result
-            const { data: _data, headers: _headers } = convertCSVtoObject(_result)
-            setOriginalData(_data)
-            setHeaders(_headers)
+
+            if (file.name.endsWith('.csv')) {
+                const { data: _data, headers: _headers } = convertCSVtoObject(_result)
+                setOriginalData(_data)
+                setHeaders(_headers)
+            } else {
+                const { data: _data, headers: _headers } = convertExcelToObject(event.target.result)
+
+                setOriginalData(_data)
+                setHeaders(_headers)
+            }
         })
 
-        reader.readAsText(file)
+        if (file.name.endsWith('.csv')) {
+            reader.readAsText(file)
+        } else {
+            reader.readAsBinaryString(file)
+        }
     }, [])
 
     const updateMyData = useCallback((rowIndex, columnId, value) => {
@@ -107,7 +120,6 @@ const DataPrevisualizer = () => {
         }, 0)
     ), [filteredData])
 
-
     const prevMonthData = useMemo(() => {
         // Give us the data of the previous month selected
         let prevMonth = (month - 1 === 0 ? 12 : month - 1).toString()
@@ -146,7 +158,7 @@ const DataPrevisualizer = () => {
             <InputFile
                 type="file"
                 id="file-selector"
-                accept=".csv"
+                accept=".csv, .xlsx"
                 onChange={loadFile}
             />
             <br />
@@ -171,7 +183,6 @@ const DataPrevisualizer = () => {
                             updateMyData={updateMyData}
                         />
                     </TableWrapper>
-                    
                     {!filteredData.length ? (
                         <DirectionWrapper direction="center">
                             <Paragraph>No hay datos para este mes</Paragraph>

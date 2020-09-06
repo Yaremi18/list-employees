@@ -11,7 +11,8 @@
     "react-organizational-chart": "^1.1.0",
     "react-scripts": "3.4.3",
     "react-table": "^7.5.0",
-    "styled-components": "^5.2.0"
+    "styled-components": "^5.2.0",
+    "xlsx": "^0.16.6"
   },
   "scripts": {
     "start": "react-scripts start",
