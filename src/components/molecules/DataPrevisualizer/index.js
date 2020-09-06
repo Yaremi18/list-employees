@@ -36,6 +36,8 @@ const DataPrevisualizer = () => {
     const [month, setMonth] = useState(actualMonth)
 
     const loadFile = useCallback(({ target }) => {
+        // This callback once the file is loaded update the
+        // data & header hooks with the CSV information.
         const file = target?.files?.[0]
         if (!file) return
 
@@ -53,6 +55,7 @@ const DataPrevisualizer = () => {
     }, [])
 
     const columns = useMemo(() => {
+        // Generate columns for previsualize the data loaded
         if (!originalData.length) return []
 
         const _headersData = Object.keys(originalData[0])
@@ -64,20 +67,24 @@ const DataPrevisualizer = () => {
     }, [originalData, headers])
 
     const filterData = useCallback((byMonth) => {
+        // Filter data by month
         return originalData.filter((row) => {
             if (!row.mes) return false
 
+            // Column "mes" has a string similar to '5-2020' where
+            // the number before '-' is the month.
             const _month = row.mes.split('-')[0]
-
             return _month === byMonth
         })
     }, [originalData])
 
     const filteredData = useMemo(() => {
+        // function that filter data by the month selected on the select
         return filterData(month)
     }, [filterData, month])
 
     const totalPayments = useMemo(() => (
+        // Calculate the "sueldo bruto" total for the data showed
         filteredData.reduce((accum, row) => {
             if (!row.sueldobruto) return accum
 
@@ -87,18 +94,21 @@ const DataPrevisualizer = () => {
 
 
     const prevMonthData = useMemo(() => {
+        // Give us the data of the previous month selected
         let prevMonth = (month - 1 === 0 ? 12 : month - 1).toString()
         return filterData(prevMonth)
     }, [month, filterData])
 
     const promotedEmployees = useMemo(() => {
+        // Search the promoted employees using the 'prevMonthData'
         let _promotedEmployees = []
         prevMonthData.forEach((prevRow) => {
             filteredData.forEach((actualRow) => {
-                const actual = Number(actualRow.sueldobruto)
-                const prev = Number(prevRow.sueldobruto)
-
-                if (!(actual > prev && actualRow.id === prevRow.id)) return
+                const actualSalary = Number(actualRow.sueldobruto)
+                const prevSalary = Number(prevRow.sueldobruto)
+                // Calculing if the actual salary is over the previous salary
+                // and ids must to be equal
+                if (!(actualSalary > prevSalary && actualRow.id === prevRow.id)) return
 
                 _promotedEmployees.push(actualRow)
             })
@@ -107,7 +117,9 @@ const DataPrevisualizer = () => {
     }, [filteredData, prevMonthData])
 
     const hiredEmployees = useMemo(() => (
+        // Calculate hired employees using the 'prevMonthData'
         filteredData.filter((actualRow) => (
+            // Find the employee that doesn't exists in the previous month data
             !prevMonthData.find((prevRow) => prevRow.id === actualRow.id)
         ))
     ), [prevMonthData, filteredData])

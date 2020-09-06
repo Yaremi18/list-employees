@@ -5,45 +5,51 @@ import { Tree, TreeNode } from 'react-organizational-chart'
 import { Node } from './style'
 
 const OrganizationChart = ({ data }) => {
-
     const root = useMemo(() => {
+        // This is the root of the organization chart
         let _root
         data.forEach((firstRow) => {
             if (_root) return
+
+            // Search the row that doesn't has a leader
             _root = data.find((secondRow) => firstRow.id !== secondRow.idlider)
         })
         return _root || {}
     }, [data])
 
     const calculateTree = useCallback((newData) => {
-        const _tree = []
-        newData.forEach((firstRow) => {
-            const children = []
-            data.forEach((secondRow) => {
+        // Iterate first over the parent node
+        const _tree = newData.reduce((accum, firstRow) => {
+            // Iterate over each row in data
+            const children = data.reduce((accumChildren, secondRow) => {
                 if (firstRow.id === secondRow.idlider) {
-                    const a = calculateTree([secondRow])
-                    children.push(a[0])
+                    // Make recursion to calculate the children of each parent node
+                    const node = calculateTree([secondRow])
+                    return [...accumChildren, ...node]
                 }
-            })
+                return accumChildren
+            }, [])
 
             if (firstRow.id === root.id) {
-                _tree.push(children)
-            } else {
-                _tree.push(
-                    <TreeNode label={
-                        <Node>
-                            <Paragraph>{firstRow.nombre}</Paragraph>
-                            <Separator />
-                            <Paragraph>{firstRow['niveljerárquico'].toUpperCase()}</Paragraph>
-                            <Paragraph>{`${firstRow['división']} > ${firstRow.area} > ${firstRow.subarea}`}</Paragraph>
-                            <br />
-                            <Paragraph>{`Fecha de ingreso: ${firstRow.fechadeingreso}`}</Paragraph>
-                        </Node>
-                    }>
-                        {children}
-                    </TreeNode>
-                )
+                // if is the root is not necessary add a TreeNode wrapper, because it already exists
+                return [...accum, children]
             }
+
+            // Add a TreeNode wrapper
+            return [...accum, (
+                <TreeNode label={
+                    <Node>
+                        <Paragraph>{firstRow.nombre}</Paragraph>
+                        <Separator />
+                        <Paragraph>{firstRow['niveljerárquico'].toUpperCase()}</Paragraph>
+                        <Paragraph>{`${firstRow['división']} > ${firstRow.area} > ${firstRow.subarea}`}</Paragraph>
+                        <br />
+                        <Paragraph>{`Fecha de ingreso: ${firstRow.fechadeingreso}`}</Paragraph>
+                    </Node>
+                }>
+                    {children}
+                </TreeNode>
+            )]
         }, [])
 
         return _tree
@@ -67,20 +73,8 @@ const OrganizationChart = ({ data }) => {
                 </Node>
             }
         >
+        {/* Add children calling calculateTree */}
         {calculateTree([root])}
-        {/* <TreeNode label={<Node>Child 1</Node>}>
-          <TreeNode label={<Node>Grand Child</Node>} />
-        </TreeNode>
-        <TreeNode label={<Node>Child 2</Node>}>
-          <TreeNode label={<Node>Grand Child</Node>}>
-            <TreeNode label={<Node>Great Grand Child 1</Node>} />
-            <TreeNode label={<Node>Great Grand Child 2</Node>} />
-          </TreeNode>
-        </TreeNode>
-        <TreeNode label={<Node>Child 3</Node>}>
-          <TreeNode label={<Node>Grand Child 1</Node>} />
-          <TreeNode label={<Node>Grand Child 2</Node>} />
-        </TreeNode> */}
       </Tree>
     )
 }
