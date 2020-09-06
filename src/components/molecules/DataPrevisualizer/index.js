@@ -10,6 +10,7 @@ import {
     DirectionWrapper,
 } from './style'
 import Separator from '../../atoms/Separator'
+import OrganizationChart from '../OrganizationChart'
 
 const months = [
   { id: 1, name: 'Enero' },
@@ -176,6 +177,8 @@ const DataPrevisualizer = () => {
                             <Paragraph>Este mes no hubo empleados contratados</Paragraph>
                         )}
                     </ColumnWrapper>
+
+                    <OrganizationChart data={filteredData} />
                 </>
             )}
         </MainWrapper>
