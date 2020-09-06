@@ -1,12 +1,15 @@
 import React, { useMemo, useCallback, useState } from 'react'
 import { Title, Subtitle, Paragraph } from '../../atoms/Text'
-import {
-  MainWrapper,
-  Input,
-} from './style'
 import convertCSVtoObject from '../../../utils/convertCsvToObject'
 import Table from '../../atoms/Table'
 import Select from '../../atoms/Select'
+import {
+    MainWrapper,
+    Input,
+    ColumnWrapper,
+    DirectionWrapper,
+} from './style'
+import Separator from '../../atoms/Separator'
 
 const months = [
   { id: 1, name: 'Enero' },
@@ -26,17 +29,19 @@ const months = [
 const actualMonth = (new Date()).getMonth() + 1
 
 const DataPrevisualizer = () => {
+    const [fileLoaded, setFileLoaded] = useState(false)
     const [headers, setHeaders] = useState([])
     const [originalData, setOriginalData] = useState([])
-
     const [month, setMonth] = useState(actualMonth)
-    const loadFile = useCallback((data) => {
-        if (!data.target?.files?.[0]) return
 
-        const file = data.target.files[0]
+    const loadFile = useCallback(({ target }) => {
+        const file = target?.files?.[0]
+        if (!file) return
+
         const reader = new FileReader()
 
         reader.addEventListener('load', (event) => {
+            setFileLoaded(true)
             const _result = event.target.result
             const { data: _data, headers: _headers } = convertCSVtoObject(_result)
             setOriginalData(_data)
@@ -108,7 +113,8 @@ const DataPrevisualizer = () => {
 
     return (
         <MainWrapper>
-            <Title>Empleados</Title>     
+            <Title>Empleados</Title>
+            
             <Input
                 type="file"
                 id="file-selector"
@@ -116,33 +122,62 @@ const DataPrevisualizer = () => {
                 onChange={loadFile}
             />
             <br />
-            <Select
-                options={months}
-                defaultValue={month}
-                onChange={({ target: { value }}) => {
-                setMonth(value)
-                }}
-            />
-            <br />
 
-            <Table
-                data={filteredData}
-                columns={columns}
-            />
+            {fileLoaded && (
+                <>
+                    <ColumnWrapper>
+                        <Paragraph>Filtrar por mes:</Paragraph>
+                        <Select
+                            options={months}
+                            defaultValue={month}
+                            onChange={({ target: { value }}) => {
+                                setMonth(value)
+                            }}
+                        />
+                    </ColumnWrapper>
+                    
+                    <br />
+                    <Table
+                        data={filteredData}
+                        columns={columns}
+                    />
+                    {filteredData.length === 0 && (
+                        <DirectionWrapper direction="center">
+                            <Paragraph>No hay datos para este mes</Paragraph>
+                        </DirectionWrapper>
+                    )}
 
-            <Subtitle>Total</Subtitle>
-            <Paragraph>{totalPayments}</Paragraph>
+                    <br /> <br />
 
-            <Subtitle>Empleados promocionados</Subtitle>
-            {promotedEmployees.map((employee) => (
-                <Paragraph key={employee.id}>{employee.nombre}</Paragraph>
-            ))}
+                    <DirectionWrapper direction="flex-end">
+                        <Subtitle color="white">Sueldo bruto total <Subtitle>{`$${totalPayments}`}</Subtitle></Subtitle>
+                    </DirectionWrapper>
+                    
+                    <ColumnWrapper>
+                        <Subtitle>Empleados promocionados</Subtitle>
+                        <Separator />
+                        {promotedEmployees.length ?
+                            promotedEmployees.map((employee, index) => (
+                                <Paragraph key={employee.id}>{employee.nombre}</Paragraph>
+                            ))
+                        : (
+                            <Paragraph>Este mes no hubo empleados promocionados</Paragraph>
+                        )}
+                    </ColumnWrapper>
 
-            <Subtitle>Empleados contratados</Subtitle>
-            {hiredEmployees.map((employee) => (
-                <Paragraph key={employee.id}>{employee.nombre}</Paragraph>
-            ))}
-
+                    <ColumnWrapper>
+                        <Subtitle>Empleados contratados</Subtitle>
+                        <Separator />
+                        {hiredEmployees.length ?
+                            hiredEmployees.map((employee) => (
+                                <Paragraph key={employee.id}>{employee.nombre}</Paragraph>
+                            ))
+                        : (
+                            <Paragraph>Este mes no hubo empleados contratados</Paragraph>
+                        )}
+                    </ColumnWrapper>
+                </>
+            )}
         </MainWrapper>
     )
 }

@@ -1,5 +1,10 @@
 import React from 'react'
 import { useTable } from 'react-table'
+import {
+    TableWrapper,
+    THead,
+    TBody,
+} from './style'
 
 const Table = ({ columns, data }) => {
     const {
@@ -14,8 +19,8 @@ const Table = ({ columns, data }) => {
     })
 
     return (
-        <table {...getTableProps()}>
-            <thead>
+        <TableWrapper cellSpacing="0" {...getTableProps()}>
+            <THead>
             {headerGroups.map(headerGroup => (
                 <tr {...headerGroup.getHeaderGroupProps()}>
                     {headerGroup.headers.map(column => (
@@ -23,9 +28,9 @@ const Table = ({ columns, data }) => {
                     ))}
                 </tr>
             ))}
-            </thead>
-            <tbody {...getTableBodyProps()}>
-                {rows.map((row, i) => {
+            </THead>
+            <TBody {...getTableBodyProps()}>
+                {rows.map((row) => {
                     prepareRow(row)
                     return (
                         <tr {...row.getRowProps()}>
@@ -35,8 +40,8 @@ const Table = ({ columns, data }) => {
                         </tr>
                     )
                 })}
-            </tbody>
-        </table>
+            </TBody>
+        </TableWrapper>
     )
 }
 
