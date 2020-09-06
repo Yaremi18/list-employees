@@ -11,7 +11,7 @@ export const InputFile = styled.input`
     ::-webkit-file-upload-button {
         border-radius: 5px;
         height: 25px;
-        background: white;
+        background: ${theme.colors.white};
         border: 2px solid ${theme.colors.primary};
         outline: none;
         cursor: pointer;
