@@ -1,12 +1,9 @@
 import XLSX from 'xlsx'
 
 const convertToObject = (workbook) => {
-    var result = []
+    let result = []
     const sheet = workbook.SheetNames[0]
-
-    console.log(workbook)
-
-    var roa = XLSX.utils.sheet_to_json(workbook.Sheets[sheet], {
+    const roa = XLSX.utils.sheet_to_json(workbook.Sheets[sheet], {
         raw: false,
     })
     if (roa.length) result = roa

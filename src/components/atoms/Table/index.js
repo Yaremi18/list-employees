@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react'
 import { useTable } from 'react-table'
+import PropTypes from 'prop-types'
 import Input from '../../atoms/Input'
 import {
     TableWrapper,
@@ -78,6 +79,12 @@ const Table = ({ columns, data, updateMyData }) => {
             </TBody>
         </TableWrapper>
     )
+}
+
+Table.propTypes = {
+    columns: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
+    data: PropTypes.arrayOf(PropTypes.shape({}).isRequired).isRequired,
+    updateMyData: PropTypes.func.isRequired,
 }
 
 export default Table

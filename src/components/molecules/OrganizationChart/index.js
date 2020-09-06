@@ -1,4 +1,5 @@
 import React, { useMemo, useCallback } from 'react'
+import PropTypes from 'prop-types'
 import Separator from '../../atoms/Separator'
 import { Paragraph, Title } from '../../atoms/Text'
 import { Tree, TreeNode } from 'react-organizational-chart'
@@ -80,6 +81,10 @@ const OrganizationChart = ({ data }) => {
         </Tree>
       </>
     )
+}
+
+OrganizationChart.propTypes = {
+    data: PropTypes.arrayOf(PropTypes.shape({}).isRequired)
 }
 
 export default OrganizationChart
